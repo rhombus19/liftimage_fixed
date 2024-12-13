@@ -2,6 +2,13 @@
 
 ### [Project Page](https://liftimage3d.github.io/) | [Arxiv Paper](https://arxiv.org/pdf/2412.09597)
 
+[Yabo Chen](https://scholar.google.com/citations?user=6aHx1rgAAAAJ&hl=zh-TW) <sup>1*</sup>, [Chen Yang](https://scholar.google.com/citations?hl=zh-CN&user=StdXTR8AAAAJ) <sup>1*</sup>,
+[Jiemin Fang](https://jaminfong.cn/) <sup>2$\ddagger$</sup>, </br>[Xiaopeng Zhang](https://scholar.google.com/citations?user=Ud6aBAcAAAAJ&hl=zh-CN) <sup>2 </sup>,[Lingxi Xie](http://lingxixie.com/) <sup>2 </sup> , [Wei Shen](https://shenwei1231.github.io/) <sup>1 </sup>,[Wenrui Dai](https://scholar.google.com/citations?user=Xg8MhyAAAAAJ&hl=en) <sup>1 </sup>, [Hongkai Xiong](https://scholar.google.com/citations?user=bB16iN4AAAAJ&hl=en&oi=ao) <sup>1 </sup>, [Qi Tian](https://www.qitian1987.com/) <sup>2 </sup>
+
+<sup>1 </sup>Shanghai Jiao Tong University &emsp; <sup>2 </sup>Huawei Inc. &emsp;
+
+<sup>\*</sup> equal contributions in no particular order. <sup>$\ddagger$</sup> project lead. 
+
 ![block](./imgs/teaser.png)   
 Single-image 3D reconstruction remains a fundamental challenge in computer vision due to inherent geometric ambiguities and limited viewpoint information. 
 Recent advances in Latent Video Diffusion Models (LVDMs) offer promising 3D priors learned from large-scale video data. 
