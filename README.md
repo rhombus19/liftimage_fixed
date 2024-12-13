@@ -1,2 +1,67 @@
-# LiftImage3D
-LiftImage3D: Lifting Any Single Image to 3D Gaussians with Video Generation Priors
+# LiftImage3D: Lifting Any Single Image to 3D Gaussians with Video Generation Priors (arxiv)
+
+### [Project Page](https://liftimage3d.github.io/) | [Arxiv Paper](https://arxiv.org/pdf/2412.09597)
+
+![block](./imgs/teaser.png)   
+Single-image 3D reconstruction remains a fundamental challenge in computer vision due to inherent geometric ambiguities and limited viewpoint information. 
+Recent advances in Latent Video Diffusion Models (LVDMs) offer promising 3D priors learned from large-scale video data. 
+However, leveraging these priors effectively faces three key challenges: (1) degradation in quality across large camera motions, 
+(2) difficulties in achieving precise camera control, and (3) geometric distortions inherent to the diffusion process that damage 3D consistency. 
+We address these challenges by proposing LiftImage3D, a framework that effectively releases LVDMs' generative priors while ensuring 3D consistency. 
+Specifically, we design an articulated trajectory strategy to generate video frames, which decomposes video sequences with large camera motions into ones with controllable small motions. 
+Then we use robust neural matching models, i.e. MASt3R, to calibrate the camera poses of generated frames and produce corresponding point clouds. 
+Finally, we propose a distortion-aware 3D Gaussian splatting representation, which can learn independent distortions between frames and output undistorted canonical Gaussians. 
+Extensive experiments demonstrate that LiftImage3D achieves state-of-the-art performance on two challenging datasets, 
+i.e. LLFF and DL3DV, and generalizes well to diverse in-the-wild images, from cartoon illustrations to complex real-world scenes.
+
+![block](./imgs/method.png)
+The overall pipeline of LiftImage3D. Firstly, we extend LVDM to generate diverse video clips from a single image using an
+articulated camera trajectory strategy. Then all generated frames are matching using the robust neural matching module and registered in
+to a point cloud. After that we initialize Gaussians from registered point clouds and construct a distortion field to model the independent
+distortion of each video frame upon canonical 3DGS.
+
+## 🦾 Updates
+- 12/13/2024: Post the arxiv paper and project page.
+
+## Requirements
+Pytorch 2.0 for faster training and inference.
+```
+conda create -f environment.yml
+```
+or 
+```
+conda create -n liftimage3d python=3.9
+conda activate liftimage3d
+pip install -r requirements.txt
+```
+
+Install [xformer](https://github.com/facebookresearch/xformers#installing-xformers) properly to enable efficient transformers.
+```commandline
+conda install xformers -c xformers
+# from source
+pip install -v -U git+https://github.com/facebookresearch/xformers.git@main#egg=xformers
+```
+
+
+
+
+##  Acknowledgement
+This repository is based on original [MotionCtrl](https://github.com/TencentARC/MotionCtrl), [ViewCrafter](https://github.com/Drexubery/ViewCrafter), [DUSt3R](https://github.com/naver/dust3r), [MASt3R](https://github.com/naver/mast3r), [3DGS](https://github.com/graphdeco-inria/gaussian-splatting), and [4DGS](https://github.com/hustvl/4DGaussians),. Thanks for their awesome works.
+
+
+##  Citation
+If you find this work repository/work helpful in your research, welcome to cite the paper and give a ⭐:
+
+```
+@misc{chen2024liftimage3d,
+    title={LiftImage3D: Lifting Any Single Image to 3D Gaussians with Video Generation Priors},
+    author={Yabo Chen and Chen Yang and Jiemin Fang and Xiaopeng Zhang and Lingxi Xie and Wei Shen and Wenrui Dai and Hongkai Xiong and Qi Tian},
+    year={2024},
+    eprint={2412.09597},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV}
+    }
+```
+
+##  On Coming
+- [] Release the code and test prototype
