@@ -23,8 +23,9 @@ articulated camera trajectory strategy. Then all generated frames are matching u
 to a point cloud. After that we initialize Gaussians from registered point clouds and construct a distortion field to model the independent
 distortion of each video frame upon canonical 3DGS.
 
-## 🦾 Updates
+## 🦾 Updates (Still Under Construction)
 - 12/13/2024: Post the arxiv paper and project page.
+- 12/19/2024: Post the pipeline of LiftImage3D.
 
 ## Requirements
 Pytorch 2.0 for faster training and inference.
@@ -67,4 +68,5 @@ If you find this work repository/work helpful in your research, welcome to cite 
 ```
 
 ##  On Coming
-- [] Release the code and test prototype
+- Release the code based on ViewCrafter
+- Release the code of test prototype
