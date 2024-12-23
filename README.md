@@ -28,7 +28,7 @@ distortion of each video frame upon canonical 3DGS.
 - 12/23/2024: Post the pipeline of LiftImage3D and requirements.
 
 ## Requirements
-1. Clone MASt3R.
+1. Clone LiftImage3D.
 ```bash
 git clone --recursive https://github.com/AbrahamYabo/LiftImage3D
 cd LiftImage3D
