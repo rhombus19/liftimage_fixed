@@ -25,8 +25,6 @@ class Deformation(nn.Module):
         self.grid_pe = grid_pe
         self.no_grid = args.no_grid
         self.grid = HexPlaneField(args.bounds, args.kplanes_config, args.multires)
-        # print("init self.grid", self.grid)
-        # breakpoint()
         self.args = args
         # self.args.empty_voxel=True
         if self.args.empty_voxel:
@@ -40,7 +38,6 @@ class Deformation(nn.Module):
     def get_aabb(self):
         return self.grid.get_aabb
     def set_aabb(self, xyz_max, xyz_min):
-        print("Deformation Net Set aabb",xyz_max, xyz_min)
         self.grid.set_aabb(xyz_max, xyz_min)
         if self.args.empty_voxel:
             self.empty_voxel.set_aabb(xyz_max, xyz_min)
@@ -67,15 +64,10 @@ class Deformation(nn.Module):
         self.shs_deform = nn.Sequential(nn.ReLU(),nn.Linear(self.W,self.W),nn.ReLU(),nn.Linear(self.W, 16*3))
 
     def query_time(self, rays_pts_emb, scales_emb, rotations_emb, time_feature, time_emb):
-        #print("*** time_emb.shape ***", time_emb.shape)
         if self.no_grid:
-            # h = torch.cat([rays_pts_emb[:,:3],time_emb[:,:1]],-1)
             h = torch.cat([rays_pts_emb[:,:3],time_emb[:,:1], time_emb[:,:1]],-1)
         else:
             grid_feature = self.grid(rays_pts_emb[:,:3], time_emb)
-            #print("deformation query_time self.grid", self.grid)
-            # grid_feature = self.grid(rays_pts_emb[:,:3], time_emb[:,:1], time_emb[:,1:])
-            # breakpoint()
             if self.grid_pe > 1:
                 grid_feature = poc_fre(grid_feature,self.grid_pe)
             hidden = torch.cat([grid_feature],-1) 
@@ -89,12 +81,9 @@ class Deformation(nn.Module):
     def get_empty_ratio(self):
         return self.ratio
     def forward(self, rays_pts_emb, scales_emb=None, rotations_emb=None, opacity = None,shs_emb=None, time_feature=None, time_emb=None):
-        #print("*** time_emb.shape ***", time_emb.shape)
-        # epsilon = 1e-4
         if time_emb is None:
             return self.forward_static(rays_pts_emb[:,:3])
-        # elif abs(time_emb[0,0]) < epsilon and abs(time_emb[0,1]) < epsilon:
-        #     return self.forward_static(rays_pts_emb[:,:3])
+
         else:
             return self.forward_dynamic(rays_pts_emb, scales_emb, rotations_emb, opacity, shs_emb, time_feature, time_emb)
 
@@ -104,19 +93,6 @@ class Deformation(nn.Module):
         return rays_pts_emb[:, :3] + dx
     
     def forward_dynamic(self,rays_pts_emb, scales_emb, rotations_emb, opacity_emb, shs_emb, time_feature, time_emb):
-        # print("time_emb.shape ", time_emb.shape, " time_emb ", time_emb)
-        # epsilon = 1e-4
-        # # if abs(time_emb[0,0]) < epsilon and abs(time_emb[0,1]) < epsilon:
-        # if math.isclose(time_emb[0,0], 0.5) and math.isclose(time_emb[0,1], 0.5):
-        #     # print("time_emb.shape ", time_emb.shape, " time_emb ", time_emb)
-        #     # print("rays_pts_emb.shape ", rays_pts_emb.shape, "scales_emb.shape ", scales_emb.shape, "rays_pts_emb.shape ", rays_pts_emb.shape, "rotations_emb.shape ", rotations_emb.shape, "opacity_emb.shape ", opacity_emb.shape,)
-        #     pts = rays_pts_emb[:,:3]
-        #     scales = scales_emb[:,:3]
-        #     rotations = rotations_emb[:,:4]
-        #     opacity = opacity_emb[:,:1]
-        #     shs = shs_emb
-
-        #     return pts, scales, rotations, opacity, shs
         dx, ds, dr, do, dshs = None, None, None, None, None
         hidden = self.query_time(rays_pts_emb, scales_emb, rotations_emb, time_feature, time_emb)
         if self.args.static_mlp:
@@ -169,8 +145,6 @@ class Deformation(nn.Module):
             shs = shs_emb*mask.unsqueeze(-1) + dshs
             
         if dx is not None and ds is not None and dr is not None:
-            # if math.isclose(time_emb[0,0], 0.5) and math.isclose(time_emb[0,1], 0.5):
-            #     print("dx ", dx, "ds", ds, "dr", dr, "do", do, "dshs", dshs)
             return pts, scales, rotations, opacity, shs, dx, ds, dr, do, dshs
         else:
             return pts, scales, rotations, opacity, shs, None, None, None, None, None
@@ -209,7 +183,6 @@ class deform_network(nn.Module):
         self.register_buffer('rotation_scaling_poc', torch.FloatTensor([(2**i) for i in range(scale_rotation_pe)]))
         self.register_buffer('opacity_poc', torch.FloatTensor([(2**i) for i in range(opacity_pe)]))
         self.apply(initialize_weights)
-        # print(self)
 
     def forward(self, point, scales=None, rotations=None, opacity=None, shs=None, times_sel=None):
         return self.forward_dynamic(point, scales, rotations, opacity, shs, times_sel)

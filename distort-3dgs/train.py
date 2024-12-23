@@ -84,21 +84,14 @@ def scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_i
 
 
     if not viewpoint_stack and not opt.dataloader:
-        # dnerf's branch
         viewpoint_stack = [i for i in train_cams]
-        # print("11 len(viewpoint_stack)", len(viewpoint_stack))
-        # for i in range(50):
-        #     viewpoint_stack.append(train_cams[0])
-        # print("scene.getTrainCameras()[0].time ", scene.getTrainCameras()[0].time)
         frame0_idx = 0
         for i, camera in enumerate(train_cams):
-            # print("i ", i, " camera.image_name ", camera.image_name, " camera.time ", camera.time)
             if "_frame0" in camera.image_name:
                 frame0_idx = i
 
         for i in range(50):
             viewpoint_stack.append(train_cams[frame0_idx])
-        # print("22 len(viewpoint_stack)", len(viewpoint_stack))
 
         temp_list = copy.deepcopy(viewpoint_stack)
     # 
@@ -154,10 +147,9 @@ def scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_i
                         viewpoint_index = viewpoint_index
                     else:
                         viewpoint_index = len(video_cams) - viewpoint_index - 1
-                    # print(viewpoint_index)
+
                     viewpoint = video_cams[viewpoint_index]
                     custom_cam.time = viewpoint.time
-                    # print(custom_cam.time, viewpoint_index, count)
                     net_image = render(custom_cam, gaussians, pipe, background, scaling_modifer, stage=stage, cam_type=scene.dataset_type)["render"]
 
                     net_image_bytes = memoryview((torch.clamp(net_image, min=0, max=1.0) * 255).byte().permute(1, 2, 0).contiguous().cpu().numpy())
@@ -198,16 +190,11 @@ def scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_i
                 viewpoint_cam = viewpoint_stack.pop(randint(0,len(viewpoint_stack)-1))
                 if not viewpoint_stack :
                     viewpoint_stack =  temp_list.copy()
-                    # for i in range(50):
-                    #     viewpoint_stack.append(scene.getTrainCameras()[0])
-                    # print("55 len(viewpoint_stack)", len(viewpoint_stack))
-                    # print("scene.getTrainCameras()[0] ", scene.getTrainCameras()[0])
                 viewpoint_cams.append(viewpoint_cam)
                 idx +=1
             if len(viewpoint_cams) == 0:
                 continue
-        # print(len(viewpoint_cams))     
-        # breakpoint()   
+
         # pose_opt_params = [
         #     {
         #         "params": [viewpoint_cam.cam_rot_delta],
@@ -269,12 +256,6 @@ def scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_i
         depth_render = torch.cat(depths,0)
         monodepth_gt = torch.cat(dptanything_depths,0)
         depth_masks = torch.cat(depth_mask_list,0)
-
-        # np.savetxt("depth_render.txt", depth_render[0].squeeze(0).squeeze(0).detach().cpu().numpy())
-        # np.savetxt("monodepth_gt.txt", monodepth_gt[0].squeeze(0).squeeze(0).detach().cpu().numpy())
-        # print("depth_render min ", depth_render.min(), " max ", depth_render.max(), " monodepth_gt min ", monodepth_gt.min(), " max ", monodepth_gt.max())
-        # Loss
-        # breakpoint()
         
         Ll1 = l1_loss(image_tensor, gt_image_tensor[:,:3,:,:])
         ssim_value = ssim(image, gt_image)
@@ -286,7 +267,6 @@ def scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_i
 
         # epsilon = 1e-6
         if stage == "fine" and time_emb is not None and math.isclose(time_emb[0,0], 0.5, abs_tol=1e-6) and math.isclose(time_emb[0,1], 0.5, abs_tol=1e-6):
-            # print("dx ", dx, "ds", ds, "dr", dr, "do", do, "dshs", dshs)
             dx_zero = torch.zeros_like(dx)
             ds_zero = torch.zeros_like(ds)
             dr_zero = torch.zeros_like(dr)
@@ -297,11 +277,6 @@ def scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_i
         # loss = Ll1
         loss += loss_zerocanonical
 
-        # ranking_loss_depth = depth_ranking_loss(depth_render, monodepth_gt)
-        # loss += 5e-2 * ranking_loss_depth
-        # l1_loss_depth = torch.abs((depth_render - monodepth_gt)).mean()
-        # depth_l1_loss = l1_loss(depth_render, monodepth_gt).mean().double()
-        # loss += 0.01 * depth_l1_loss
         Ll1depth_pure = 0.0
         if depth_l1_weight(iteration) > 0 and viewpoint_cam.depth_reliable:
             invDepth = depth_render.cuda()
@@ -309,14 +284,11 @@ def scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_i
             depth_masks = depth_masks.cuda()
             
             depth_mask_render = invDepth > 1e-10
-            # print("depth_mask.shape ", depth_masks.shape, "depth_mask.min() ", depth_masks.min() )
-            # print("depth_mask_render.shape ", depth_mask_render.shape, "depth_mask_render.min() ", depth_mask_render.min() )
             
             depth_mask = torch.logical_and(depth_masks, depth_mask_render)
 
             Ll1depth_pure = torch.abs((invDepth  - mono_invdepth) * depth_mask).mean()
 
-            # import pdb; pdb.set_trace()
             Ll1depth = depth_l1_weight(iteration) * Ll1depth_pure 
             loss += Ll1depth
             Ll1depth = Ll1depth.item()
@@ -326,34 +298,21 @@ def scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_i
         loss += Ll1depth
 
         if stage == "fine" and hyper.time_smoothness_weight != 0:
-            # tv_loss = 0
+
             tv_loss = gaussians.compute_regulation(hyper.time_smoothness_weight, hyper.l1_time_planes, hyper.plane_tv_weight)
             loss += tv_loss
         if opt.lambda_dssim != 0:
             ssim_loss = ssim(image_tensor,gt_image_tensor)
             loss += opt.lambda_dssim * (1.0-ssim_loss)
-        # if opt.lambda_lpips !=0:
-        #     lpipsloss = lpips_loss(image_tensor,gt_image_tensor,lpips_model)
-        #     loss += opt.lambda_lpips * lpipsloss
-        
 
         loss.backward()
-        # if torch.isnan(loss).any():
-        #     print("loss is nan,end training, reexecv program now.")
-        #     os.execv(sys.executable, [sys.executable] + sys.argv)
-        #     # print("loss is nan, reexecv this iteration")
         if torch.isnan(loss).any():
-            # print("loss is nan,end training, reexecv program now.")
-            # os.execv(sys.executable, [sys.executable] + sys.argv)
-            # print("loss is nan, reexecv this iteration")
-
             check_params = [("xyz",gaussians._xyz), ("scales",gaussians._scaling), ("rotation",gaussians._rotation),
                 ("opacity", gaussians._opacity), ("feature_dc",gaussians._features_dc), ("rest", gaussians._features_rest)]
             for name, param in check_params:
                 if param.grad is None or torch.isnan(param.grad).any():
                     print(f"grad is of {name} None! reset optimizer and return.")
                     gaussians.optimizer.zero_grad(set_to_none = True)
-            
             continue
             
         viewspace_point_tensor_grad = torch.zeros_like(viewspace_point_tensor)
@@ -385,16 +344,12 @@ def scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_i
                 print("\n[ITER {}] Saving Gaussians".format(iteration))
                 scene.save(iteration, stage)
             if dataset.render_process:
-                if (iteration < 1000 and iteration % 10 == 9) \
-                    or (iteration < 3000 and iteration % 50 == 49) \
-                        or (iteration < 60000 and iteration %  100 == 99) :
-                    # breakpoint()
-                        # print("len(test_cams) ", len(test_cams))
-                        render_training_image(scene, gaussians, [test_cams[iteration%len(test_cams)]], render, pipe, background, stage+"test", iteration,timer.get_elapsed_time(),scene.dataset_type)
+                if (iteration < 1000 and iteration % 20 == 19) \
+                    or (iteration < 3000 and iteration % 200 == 199) \
+                        or (iteration < 60000 and iteration %  500 == 499) :
+                        # render_training_image(scene, gaussians, [test_cams[iteration%len(test_cams)]], render, pipe, background, stage+"test", iteration,timer.get_elapsed_time(),scene.dataset_type)
                         render_training_image(scene, gaussians, [train_cams[iteration%len(train_cams)]], render, pipe, background, stage+"train", iteration,timer.get_elapsed_time(),scene.dataset_type)
-                        # render_training_image(scene, gaussians, train_cams, render, pipe, background, stage+"train", iteration,timer.get_elapsed_time(),scene.dataset_type)
 
-                    # total_images.append(to8b(temp_image).transpose(1,2,0))
             timer.start()
             # Densification
             if iteration < opt.densify_until_iter :
@@ -412,31 +367,20 @@ def scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_i
                     size_threshold = 20 if iteration > opt.opacity_reset_interval else None
                     
                     gaussians.densify(densify_threshold, opacity_threshold, scene.cameras_extent, size_threshold, 5, 5, scene.model_path, iteration, stage)
-                # if  iteration > opt.pruning_from_iter and iteration % opt.pruning_interval == 0 and gaussians.get_xyz.shape[0]>200000:
                 if  iteration > opt.pruning_from_iter and iteration % opt.pruning_interval == 0:
-                    # size_threshold = 20 if iteration > opt.opacity_reset_interval else None
-                    size_threshold = 50
-                    # print(" size_threshold ", size_threshold, " opt.opacity_reset_interval ", opt.opacity_reset_interval)
+                    size_threshold = 20
 
                     gaussians.prune(densify_threshold, opacity_threshold, scene.cameras_extent, size_threshold)
-                    
-                # if iteration > opt.densify_from_iter and iteration % opt.densification_interval == 0 :
+
                 if iteration % opt.densification_interval == 0 and gaussians.get_xyz.shape[0]<500000 and opt.add_point:
                     gaussians.grow(5,5,scene.model_path,iteration,stage)
-                    # torch.cuda.empty_cache()
                 if iteration % opt.opacity_reset_interval == 0:
                     print("reset opacity")
                     gaussians.reset_opacity()
             
             if gaussians._xyz.grad is not None and torch.isnan(gaussians._xyz.grad).any():
-                # import pdb; pdb.set_trace()
-                # print(" gaussians._xyz.grad.isnan() ",  gaussians._xyz.grad.isnan())
-                print("gaussians._xyz.grad.isnan()).squeeze() ", gaussians._xyz.grad.isnan()[:,0].squeeze().sum())
+                # print("gaussians._xyz.grad.isnan()).squeeze() ", gaussians._xyz.grad.isnan()[:,0].squeeze().sum())
                 gaussians.prune_points((gaussians._xyz.grad.isnan()[:,0]).squeeze())
-                # print()
-                # if deformation_parameter_record is not None:
-                # print("deformation_parameter_record ", deformation_parameter_record)
-                # import pdb; pdb.set_trace()
                 gaussians._deformation.deformation_net = deformation_parameter_record
 
                 gaussians.optimizer.zero_grad(set_to_none = True)
@@ -449,15 +393,9 @@ def scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_i
                 gaussians.optimizer.step()
                 gaussians.optimizer.zero_grad(set_to_none = True)
 
-                # if iteration < opt.pose_iterations and iteration > opt.pose_init_iterations and stage == "coarse":
-                #     pose_optimizer.step()
-                #     pose_optimizer.zero_grad(set_to_none = True)
-                #     _ = update_pose(viewpoint_cam)
-
                 for name, param in check_params_deform:
                     if torch.isnan(param[-1].state_dict()['weight']).any():
-                        print("After step check_params_deform is nan")
-                        # import pdb; pdb.set_trace()
+                        print("After step check_params_deform is nan. Do backup and refresh the training")
                         gaussians._deformation.deformation_net = deformation_parameter_record
 
             if (iteration in checkpoint_iterations):
@@ -499,10 +437,6 @@ def training(dataset, hyper, opt, pipe, testing_iterations, saving_iterations, c
 
 def prepare_output_and_logger(expname):    
     if not args.model_path:
-        # if os.getenv('OAR_JOB_ID'):
-        #     unique_str=os.getenv('OAR_JOB_ID')
-        # else:
-        #     unique_str = str(uuid.uuid4())
         unique_str = expname
 
         args.model_path = os.path.join("./output/", unique_str)
@@ -558,7 +492,6 @@ def training_report(tb_writer, iteration, Ll1, loss, l1_loss, elapsed, testing_i
                 psnr_test /= len(config['cameras'])
                 l1_test /= len(config['cameras'])          
                 print("\n[ITER {}] Evaluating {}: L1 {} PSNR {}".format(iteration, config['name'], l1_test, psnr_test))
-                # print("sh feature",scene.gaussians.get_features.shape)
                 if tb_writer:
                     tb_writer.add_scalar(stage + "/"+config['name'] + '/loss_viewpoint - l1_loss', l1_test, iteration)
                     tb_writer.add_scalar(stage+"/"+config['name'] + '/loss_viewpoint - psnr', psnr_test, iteration)

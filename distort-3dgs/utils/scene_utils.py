@@ -60,7 +60,7 @@ def render_training_image(scene, gaussians, viewpoints, render_func, pipe, backg
         draw1 = ImageDraw.Draw(image_with_labels)
 
         # 选择字体和字体大小
-        font = ImageFont.truetype('./utils/TIMES.TTF', size=40)  # 请将路径替换为您选择的字体文件路径
+        font = ImageFont.truetype('distort-3dgs/utils/TIMES.TTF', size=40)  # 请将路径替换为您选择的字体文件路径
 
         # 选择文本颜色
         text_color = (255, 0, 0)  # 白色

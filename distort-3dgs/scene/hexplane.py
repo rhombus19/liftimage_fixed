@@ -143,8 +143,7 @@ class HexPlaneField(nn.Module):
             else:
                 self.feat_dim = gp[-1].shape[1]
             self.grids.append(gp)
-        # print(f"Initialized model grids: {self.grids}")
-        print("feature_dim:",self.feat_dim)
+        # print("feature_dim:",self.feat_dim)
     @property
     def get_aabb(self):
         return self.aabb[0], self.aabb[1]
@@ -158,10 +157,8 @@ class HexPlaneField(nn.Module):
 
     def get_density(self, pts: torch.Tensor, timestamps: Optional[torch.Tensor] = None):
         """Computes and returns the densities."""
-        # breakpoint()
         pts = normalize_aabb(pts, self.aabb)
         pts = torch.cat((pts, timestamps[:,:1], timestamps[:,1:]), dim=-1)  # [n_rays, n_samples, 4]
-        #print("pts.shape ", pts.shape)
 
         pts = pts.reshape(-1, pts.shape[-1])
         features = interpolate_ms_features(

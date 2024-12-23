@@ -12,7 +12,7 @@ if __name__ == "__main__":
     parser.add_argument('--gpu', type=int, default=0, help="The gpu")
     parser.add_argument('--port', type=int, default=6009, help="The port")
     parser.add_argument('--cache_dir', type=str, default="output", help="The cache dictionary")
-    parser.add_argument('--input_file', type=str, default='input_images/testimg001.png', help="The extention of input images")
+    parser.add_argument('--input_file', type=str, default='input_images/testimg_001.png', help="The extention of input images")
     
 
     args = parser.parse_args()
