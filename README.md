@@ -37,11 +37,7 @@ cd LiftImage3D
 ```
 
 2. Pytorch 2.0 for faster training and inference.
-```
-conda create -f environment.yml
-```
-or 
-```
+```bash
 conda create -n liftimage3d python=3.11
 conda activate liftimage3d
 conda install pytorch torchvision pytorch-cuda=12.1 -c pytorch -c nvidia  # use the correct version of cuda for your system
@@ -50,7 +46,7 @@ pip install -r requirements.txt
 ```
 
 3. Install [xformer](https://github.com/facebookresearch/xformers#installing-xformers) properly to enable efficient transformers.
-```commandline
+```bash
 conda install xformers -c xformers
 # from source
 pip install -v -U git+https://github.com/facebookresearch/xformers.git@main#egg=xformers
