@@ -25,32 +25,68 @@ distortion of each video frame upon canonical 3DGS.
 
 ## 🦾 Updates (Still Under Construction)
 - 12/13/2024: Post the arxiv paper and project page.
-- 12/23/2024: Post the pipeline of LiftImage3D.
+- 12/23/2024: Post the pipeline of LiftImage3D and requirements.
 
 ## Requirements
-Pytorch 2.0 for faster training and inference.
+1. Clone MASt3R.
+```bash
+git clone --recursive https://github.com/AbrahamYabo/LiftImage3D
+cd LiftImage3D
+# if you have already cloned LiftImage3D:
+# git submodule update --init --recursive
+```
+
+2. Pytorch 2.0 for faster training and inference.
 ```
 conda create -f environment.yml
 ```
 or 
 ```
-conda create -n liftimage3d python=3.9
+conda create -n liftimage3d python=3.11
 conda activate liftimage3d
+conda install pytorch torchvision pytorch-cuda=12.1 -c pytorch -c nvidia  # use the correct version of cuda for your system
+
 pip install -r requirements.txt
 ```
 
-Install [xformer](https://github.com/facebookresearch/xformers#installing-xformers) properly to enable efficient transformers.
+3. Install [xformer](https://github.com/facebookresearch/xformers#installing-xformers) properly to enable efficient transformers.
 ```commandline
 conda install xformers -c xformers
 # from source
 pip install -v -U git+https://github.com/facebookresearch/xformers.git@main#egg=xformers
 ```
 
+4. Optional, compile the cuda kernels for RoPE (as in CroCo v2).
+```bash
+# DUST3R relies on RoPE positional embeddings for which you can compile some cuda kernels for faster runtime.
+cd mast3r/dust3r/croco/models/curope/
+python setup.py build_ext --inplace
+cd ../../../../../
+```
 
-
+5. Download all the checkpoints needed
+```
+mkdir -p checkpoints/
+wget https://huggingface.co/depth-anything/Depth-Anything-V2-Large/resolve/main/depth_anything_v2_vitl.pth -P checkpoints/
+wget https://download.europe.naverlabs.com/ComputerVision/MASt3R/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric.pth -P checkpoints/
+wget https://huggingface.co/TencentARC/MotionCtrl/resolve/main/motionctrl_svd.ckpt -P checkpoints/
+```
+All the checkpoints should be organize as follows.
+```
+├── checkpoints
+│     ├── depth_anything_v2_vitl.pth
+│     ├── MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric.pth
+│     ├── motionctrl_svd.ckpt
+├── laion
+│   | CLIP-ViT-H-14-laion2B-s32B-b79K
+│     ├── config.json
+│     ├── open_clip_config.json
+│     ├── open_clip_pytorch_model.bin
+│     ├── ...
+```
 
 ##  Acknowledgement
-This repository is based on original [MotionCtrl](https://github.com/TencentARC/MotionCtrl), [ViewCrafter](https://github.com/Drexubery/ViewCrafter), [DUSt3R](https://github.com/naver/dust3r), [MASt3R](https://github.com/naver/mast3r), [3DGS](https://github.com/graphdeco-inria/gaussian-splatting), and [4DGS](https://github.com/hustvl/4DGaussians),. Thanks for their awesome works.
+This repository is based on original [MotionCtrl](https://github.com/TencentARC/MotionCtrl), [ViewCrafter](https://github.com/Drexubery/ViewCrafter), [DUSt3R](https://github.com/naver/dust3r), [MASt3R](https://github.com/naver/mast3r), [Depth Anything V2](https://github.com/DepthAnything/Depth-Anything-V2), [3DGS](https://github.com/graphdeco-inria/gaussian-splatting), and [4DGS](https://github.com/hustvl/4DGaussians),. Thanks for their awesome works.
 
 
 ##  Citation
