@@ -9,7 +9,7 @@
 
 <sup>\*</sup> equal contributions in no particular order. <sup>$\ddagger$</sup> project lead. 
 
-![block](./imgs/teaser.png)   
+![block](./assets/teaser.png)   
 Leveraging Latent Video Diffusion Models (LVDMs) priors effectively faces three key challenges: (1) degradation in quality across large camera motions, 
 (2) difficulties in achieving precise camera control, and (3) geometric distortions inherent to the diffusion process that damage 3D consistency. 
 We address these challenges by proposing LiftImage3D, a framework that effectively releases LVDMs' generative priors while ensuring 3D consistency. 
@@ -17,7 +17,7 @@ Specifically, we design an articulated trajectory strategy to generate video fra
 Then we use robust neural matching models, i.e. MASt3R, to calibrate the camera poses of generated frames and produce corresponding point clouds. 
 Finally, we propose a distortion-aware 3D Gaussian splatting representation, which can learn independent distortions between frames and output undistorted canonical Gaussians. 
 
-![block](./imgs/method.png)
+![block](./assets/method.png)
 The overall pipeline of LiftImage3D. Firstly, we extend LVDM to generate diverse video clips from a single image using an
 articulated camera trajectory strategy. Then all generated frames are matching using the robust neural matching module and registered in
 to a point cloud. After that we initialize Gaussians from registered point clouds and construct a distortion field to model the independent
@@ -25,7 +25,7 @@ distortion of each video frame upon canonical 3DGS.
 
 ## 🦾 Updates (Still Under Construction)
 - 12/13/2024: Post the arxiv paper and project page.
-- 12/19/2024: Post the pipeline of LiftImage3D.
+- 12/23/2024: Post the pipeline of LiftImage3D.
 
 ## Requirements
 Pytorch 2.0 for faster training and inference.
@@ -70,3 +70,4 @@ If you find this work repository/work helpful in your research, welcome to cite 
 ##  On Coming
 - Release the code based on ViewCrafter
 - Release the code of test prototype
+- Release the local 3DGS viewer
