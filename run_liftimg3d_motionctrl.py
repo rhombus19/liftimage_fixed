@@ -21,6 +21,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     _, ext = os.path.splittext(args.input_file)
+    if not os.path.isdir(args.cache_dir):
+        os.makedirs(args.cache_dir)
     cmd_motionctrl = f"python motionctrlsvd/configs/inference/scripts_motionctrl.py --gpu {args.gpu} \
                                                                         --cache_dir {args.cache_dir} \
                                                                         --height {args.height} \
