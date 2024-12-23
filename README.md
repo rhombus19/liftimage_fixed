@@ -61,11 +61,12 @@ cd ../../../../../
 ```
 
 5. Download all the checkpoints needed
-```
+```bash
 mkdir -p checkpoints/
 wget https://huggingface.co/depth-anything/Depth-Anything-V2-Large/resolve/main/depth_anything_v2_vitl.pth -P checkpoints/
 wget https://download.europe.naverlabs.com/ComputerVision/MASt3R/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric.pth -P checkpoints/
 wget https://huggingface.co/TencentARC/MotionCtrl/resolve/main/motionctrl_svd.ckpt -P checkpoints/
+#Because the computing resources I have cannot directly access the web network, I choose to keep laion/CLIP-ViT-H-14-laion2B-s32B-b79K locally. You can also download it from the website https://huggingface.co/laion/CLIP-ViT-H-14-laion2B-s32B-b79K/tree/main for access."
 ```
 All the checkpoints should be organize as follows.
 ```
@@ -79,6 +80,12 @@ All the checkpoints should be organize as follows.
 │     ├── open_clip_config.json
 │     ├── open_clip_pytorch_model.bin
 │     ├── ...
+```
+
+6. Try LiftImage3D now
+```bash
+python run_liftimg3d_motionctrl.py --gpu 0 --cache_dir ./output --input_file input_images/testimg001.png --width 1024 --height 768 
+#Note that --width and --height need to match the actual resolution of the input image. To maintain the generation performance of motionctrl, it is recommended to choose a width of 1024."
 ```
 
 ##  Acknowledgement
