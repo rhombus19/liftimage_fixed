@@ -52,7 +52,17 @@ conda install xformers -c xformers
 pip install -v -U git+https://github.com/facebookresearch/xformers.git@main#egg=xformers
 ```
 
-4. Optional, compile the cuda kernels for RoPE (as in CroCo v2).
+5. Install the submodules of 3DGS. We have two diff-gaussian-rasterization for different rendering strategy. [diff-w](https://github.com/rmurai0610/diff-gaussian-rasterization-w-pose/tree/43e21bff91cd24986ee3dd52fe0bb06952e50ec7) and [diff-ori](https://github.com/graphdeco-inria/diff-gaussian-rasterization/tree/9c5c2028f6fbee2be239bc4c9421ff894fe4fbe0) 
+```bash
+# We have two diff-gaussian-rasterization for different rendering strategy
+cd distort-3dgs
+pip install -e submodules/diff-w
+pip install -e submodules/diff-ori
+pip install -e submodules/simple-knn
+cd ../
+```
+
+6. Optional, compile the cuda kernels for RoPE (as in CroCo v2).
 ```bash
 # DUST3R relies on RoPE positional embeddings for which you can compile some cuda kernels for faster runtime.
 cd mast3r/dust3r/croco/models/curope/
@@ -60,7 +70,7 @@ python setup.py build_ext --inplace
 cd ../../../../../
 ```
 
-5. Download all the checkpoints needed
+7. Download all the checkpoints needed
 ```bash
 mkdir -p checkpoints/
 wget https://huggingface.co/depth-anything/Depth-Anything-V2-Large/resolve/main/depth_anything_v2_vitl.pth -P checkpoints/
@@ -82,7 +92,7 @@ All the checkpoints should be organize as follows.
 │     ├── ...
 ```
 
-6. Try LiftImage3D now
+8. Try LiftImage3D now
 ```bash
 python run_liftimg3d_motionctrl.py --cache_dir ./output --input_file input_images/testimg001.png --width 1024 --height 768 
 #Note that --width and --height need to match the actual resolution of the input image. 
