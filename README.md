@@ -1,4 +1,4 @@
-# LiftImage3D: Lifting Any Single Image to 3D Gaussians with Video Generation Priors (arxiv)
+# LiftImage3D: Lifting Any Single Image to 3D Gaussians with Video Generation Priors
 
 ### [Project Page](https://liftimage3d.github.io/) | [Arxiv Paper](https://arxiv.org/pdf/2412.09597)
 
@@ -12,10 +12,6 @@
 ![block](./assets/teaser.png)   
 Leveraging Latent Video Diffusion Models (LVDMs) priors effectively faces three key challenges: (1) degradation in quality across large camera motions, 
 (2) difficulties in achieving precise camera control, and (3) geometric distortions inherent to the diffusion process that damage 3D consistency. 
-We address these challenges by proposing LiftImage3D, a framework that effectively releases LVDMs' generative priors while ensuring 3D consistency. 
-Specifically, we design an articulated trajectory strategy to generate video frames, which decomposes video sequences with large camera motions into ones with controllable small motions. 
-Then we use robust neural matching models, i.e. MASt3R, to calibrate the camera poses of generated frames and produce corresponding point clouds. 
-Finally, we propose a distortion-aware 3D Gaussian splatting representation, which can learn independent distortions between frames and output undistorted canonical Gaussians. 
 
 ![block](./assets/method.png)
 The overall pipeline of LiftImage3D. Firstly, we extend LVDM to generate diverse video clips from a single image using an
@@ -26,6 +22,10 @@ distortion of each video frame upon canonical 3DGS.
 ## 🦾 Updates (Still Under Construction)
 - 12/13/2024: Post the arxiv paper and project page.
 - 12/23/2024: Post the pipeline of LiftImage3D and requirements.
+##  On Coming
+- Release the code based on ViewCrafter
+- Release the code of test prototype
+- Release the local 3DGS viewer
 
 ## Requirements
 1. Clone LiftImage3D.
@@ -117,7 +117,4 @@ If you find this work repository/work helpful in your research, welcome to cite 
     }
 ```
 
-##  On Coming
-- Release the code based on ViewCrafter
-- Release the code of test prototype
-- Release the local 3DGS viewer
+
