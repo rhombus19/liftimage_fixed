@@ -8,7 +8,7 @@ if __name__ == "__main__":
     # parser.add_argument('--num', type=int, default=0, help="The input file names")
     parser.add_argument('--gpu', type=int, default=0, help="The gpu names")
     parser.add_argument('--cache_dir', type=str, default="output", help="The cache dictionary")
-    parser.add_argument('--height', type=int, default=768, help="The height of input images")
+    parser.add_argument('--height', type=int, default=576, help="The height of input images")
     parser.add_argument('--width', type=int, default=1024, help="The width of input images")
     parser.add_argument('--ddim_steps', type=int, default=50, help="The steps of DDIM")
     parser.add_argument('--input_file', type=str, default='input_images/testimg001.png', help="The extention of input images")

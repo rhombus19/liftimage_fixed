@@ -93,7 +93,7 @@ if __name__ == "__main__":
                     with_external= image_input_final_cur + args.ext
 
 
-                cmd_str = f"CUDA_VISIBLE_DEVICES={args.gpu} python motionctrlsvd/main/inference/motionctrl_cmcm_run.py \
+                cmd_str = f"python motionctrlsvd/main/inference/motionctrl_cmcm_run.py \
                 --seed {seed} \
                 --ckpt {ckpt} \
                 --config 'motionctrlsvd/configs/inference/config_motionctrl_cmcm.yaml' \

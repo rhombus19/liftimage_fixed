@@ -415,7 +415,7 @@ class FrozenOpenCLIPEmbedder2(AbstractEmbModel):
         assert layer in self.LAYERS
         model, _, _ = open_clip.create_model_and_transforms(
             arch,
-            device=torch.device("cpu"),
+            device=torch.device("cuda"),
             pretrained=version,
         )
         del model.visual
@@ -514,7 +514,7 @@ class FrozenOpenCLIPEmbedder(AbstractEmbModel):
         super().__init__()
         assert layer in self.LAYERS
         model, _, _ = open_clip.create_model_and_transforms(
-            arch, device=torch.device("cpu"), pretrained=version
+            arch, device=torch.device("cuda"), pretrained=version
         )
         del model.visual
         self.model = model
@@ -588,16 +588,20 @@ class FrozenOpenCLIPImageEmbedder(AbstractEmbModel):
         init_device=None,
     ):
         super().__init__()
-        # model, _, _ = open_clip.create_model_and_transforms(
-        #     arch,
-        #     device=torch.device(default(init_device, "cuda")),
-        #     pretrained=version,
-        # )
+        print("here")
+        # import code; code.interact(local=locals())
         model, _, _ = open_clip.create_model_and_transforms(
-            arch, 
-            device=torch.device('cpu'), 
-            pretrained='laion/CLIP-ViT-H-14-laion2B-s32B-b79K/open_clip_pytorch_model.bin'
+            "ViT-H-14",
+            device="cuda",
+            pretrained="laion2b_s32b_b79k",
         )
+        print("done")
+        # model, _, _ = open_clip.create_model_and_transforms(
+        #     arch, 
+        #     device=torch.device('cuda'), 
+        #     pretrained='laion/CLIP-ViT-H-14-laion2B-s32B-b79K/open_clip_pytorch_model.bin'
+        # )
+        # print("done")
         
         del model.transformer
         self.model = model

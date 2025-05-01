@@ -38,7 +38,7 @@ def clip_process_images(images: torch.Tensor) -> torch.Tensor:
 
 class DeepFloydDataFiltering(object):
     def __init__(
-        self, verbose: bool = False, device: torch.device = torch.device("cpu")
+        self, verbose: bool = False, device: torch.device = torch.device("cuda")
     ):
         super().__init__()
         self.verbose = verbose

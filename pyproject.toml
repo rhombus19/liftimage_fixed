@@ -1,0 +1,41 @@
+[project]
+name = "liftimage3d"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "torch==2.6.0",
+    "einops>=0.8.1",
+    "fire>=0.7.0",
+    "kornia>=0.8.0",
+    "omegaconf>=2.3.0",
+    "open-clip-torch>=2.30.0",
+    "opencv-python-headless>=4.11.0.86",
+    "pytorch-lightning>=2.5.1",
+    "scipy>=1.15.2",
+    "torch>=2.6.0",
+    "transformers>=4.51.0",
+    "trimesh>=4.6.6",
+    "torchvision>=0.21.0",
+    "simple-knn",
+    "clip",
+    "xformers",
+    "diff-gaussian-rasterization",
+    "pyav>=14.2.1",
+    "matplotlib>=3.10.1",
+    "roma>=1.5.2.1",
+    "imageio>=2.37.0",
+]
+
+
+[tool.uv.sources]
+xformers = { index = "pytorch", marker = "sys_platform == 'linux'" }
+clip = { git = "https://github.com/openai/CLIP.git" }
+diff-gaussian-rasterization = { path = "distort-3dgs/submodules/diff-w" }
+simple-knn = { path = "distort-3dgs/submodules/simple-knn" }
+
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true

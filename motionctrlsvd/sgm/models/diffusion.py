@@ -46,6 +46,7 @@ class DiffusionEngine(pl.LightningModule):
         self.optimizer_config = default(
             optimizer_config, {"target": "torch.optim.AdamW"}
         )
+        print("instantiate from congih")
         model = instantiate_from_config(network_config)
         self.model = get_obj_from_str(default(network_wrapper, OPENAIUNETWRAPPER))(
             model, compile_model=compile_model
@@ -57,11 +58,15 @@ class DiffusionEngine(pl.LightningModule):
             if sampler_config is not None
             else None
         )
+        print("conditioner config", conditioner_config)
+        print(UNCONDITIONAL_CONFIG)
         self.conditioner = instantiate_from_config(
             default(conditioner_config, UNCONDITIONAL_CONFIG)
         )
+        print("ready")
         self.scheduler_config = scheduler_config
         self._init_first_stage(first_stage_config)
+        print("first stage")
 
         ## update with num_frames
         self.num_frames = network_config.params.num_frames
