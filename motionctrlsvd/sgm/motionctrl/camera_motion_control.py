@@ -18,15 +18,11 @@ class CameraMotionControl(DiffusionEngine):
             ckpt_path = kwargs.pop('ckpt_path')
         else:
             ckpt_path = None
-        
-        print(ckpt_path)
 
         self.use_checkpoint = kwargs['network_config']['params']['use_checkpoint']
 
-        print("Super init")
         super().__init__(*args, **kwargs)
 
-        print("Unet diff")
         bound_method = forward_VideoUnet.__get__(
                 self.model.diffusion_model, 
                 self.model.diffusion_model.__class__)
@@ -58,10 +54,8 @@ class CameraMotionControl(DiffusionEngine):
 
 
             if _module.__class__.__name__ == 'SpatialVideoTransformer':
-                print("SpatialVideoTransformer", ckpt_path)
                 bound_method = forward_SpatialVideoTransformer.__get__(
                     _module, _module.__class__)
                 setattr(_module, 'forward', bound_method)
-        print("DONE")
         if ckpt_path is not None:
             self.init_from_ckpt(ckpt_path)
