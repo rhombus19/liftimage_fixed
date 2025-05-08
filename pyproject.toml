@@ -39,5 +39,5 @@ simple-knn = { path = "distort-3dgs/submodules/simple-knn" }
 
 [[tool.uv.index]]
 name = "pytorch"
-url = "https://download.pytorch.org/whl/cu126"
+url = "https://download.pytorch.org/whl/cu124"
 explicit = true
