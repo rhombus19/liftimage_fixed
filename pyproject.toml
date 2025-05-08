@@ -22,20 +22,22 @@ dependencies = [
     "clip",
     "xformers",
     "diff-gaussian-rasterization",
-    "pyav>=14.2.1",
     "matplotlib>=3.10.1",
     "roma>=1.5.2.1",
     "imageio>=2.37.0",
+    "lpips>=0.1.4",
+    "plyfile>=1.1",
+    "open3d>=0.19.0",
 ]
 
 
 [tool.uv.sources]
 xformers = { index = "pytorch", marker = "sys_platform == 'linux'" }
 clip = { git = "https://github.com/openai/CLIP.git" }
-diff-gaussian-rasterization = { path = "distort-3dgs/submodules/diff-w" }
+diff-gaussian-rasterization = { path = "distort-3dgs/submodules/diff-ori" }
 simple-knn = { path = "distort-3dgs/submodules/simple-knn" }
 
 [[tool.uv.index]]
 name = "pytorch"
-url = "https://download.pytorch.org/whl/cu124"
+url = "https://download.pytorch.org/whl/cu126"
 explicit = true
