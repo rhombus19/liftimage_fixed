@@ -167,9 +167,7 @@ def sample(
         num_steps,
     )
     torch.manual_seed(seed)
-    import code; code.interact(local=locals())
     path = Path(input_path)
-    print("path", path)
     all_img_paths = []
     if path.is_file():
         if any([input_path.endswith(x) for x in [".jpg", ".jpeg", ".png", ".JPG"]]):
@@ -398,9 +396,7 @@ def load_model(
 
     config = OmegaConf.load(config)
     config.model.params.ckpt_path = ckpt
-    print("not_running_cuda(")
     if device == "cuda":
-        print("running cuda")
         config.model.params.conditioner_config.params.emb_models[
             0
         ].params.open_clip_embedding_config.params.init_device = device
@@ -410,12 +406,9 @@ def load_model(
         num_frames
     )
     
-    print("loading model from config")
     model = instantiate_from_config(config.model)
-    print("loaded model")
-
-    model = model.to(device).eval()    
-    print("moved to cuda")
+    
+    model = model.to(device).eval()
     filter = None #DeepFloydDataFiltering(verbose=False, device=device)
     return model, filter
 
@@ -453,7 +446,6 @@ if __name__ == "__main__":
     #Fire(sample)
     parser = get_parser()
     args = parser.parse_args()
-    print("inside main")
     sample(input_path=args.input, ckpt=args.ckpt, config=args.config, num_frames=args.frames, num_steps=args.ddim_steps, \
         fps_id=args.fps, motion_bucket_id=args.motion, cond_aug=args.cond_aug, seed=args.seed, \
         decoding_t=args.decoding_t, output_folder=args.savedir, save_fps=args.savefps, resize=args.resize,

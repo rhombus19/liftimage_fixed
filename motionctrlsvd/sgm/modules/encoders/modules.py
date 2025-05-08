@@ -588,20 +588,11 @@ class FrozenOpenCLIPImageEmbedder(AbstractEmbModel):
         init_device=None,
     ):
         super().__init__()
-        print("here")
-        # import code; code.interact(local=locals())
         model, _, _ = open_clip.create_model_and_transforms(
-            "ViT-H-14",
-            device="cuda",
-            pretrained="laion2b_s32b_b79k",
+            arch,
+            device=device,
+            pretrained=version,
         )
-        print("done")
-        # model, _, _ = open_clip.create_model_and_transforms(
-        #     arch, 
-        #     device=torch.device('cuda'), 
-        #     pretrained='laion/CLIP-ViT-H-14-laion2B-s32B-b79K/open_clip_pytorch_model.bin'
-        # )
-        # print("done")
         
         del model.transformer
         self.model = model
