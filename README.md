@@ -7,9 +7,9 @@ to a point cloud. After that we initialize Gaussians from registered point cloud
 distortion of each video frame upon canonical 3DGS.
 
 ## Requirements:
-Cuda Toolkit (tested on cuda-12.4)
-16+ GiB RAM
-20+ Gib VRAM
+1. Cuda Toolkit (tested on cuda-12.4)
+2. 16+ GiB RAM
+3. 20+ Gib VRAM
 
 ## Setup guide
 1. Clone repository.
@@ -43,7 +43,7 @@ mkdir -p checkpoints/
 wget https://huggingface.co/depth-anything/Depth-Anything-V2-Large/resolve/main/depth_anything_v2_vitl.pth -P checkpoints/
 wget https://download.europe.naverlabs.com/ComputerVision/MASt3R/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric.pth -P checkpoints/
 wget https://huggingface.co/TencentARC/MotionCtrl/resolve/main/motionctrl_svd.ckpt -P checkpoints/
-
+```
 
 6. Optional, compile the cuda kernels for RoPE (as in CroCo v2).
 ```bash
