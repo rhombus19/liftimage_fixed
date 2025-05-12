@@ -11,7 +11,7 @@ if __name__ == "__main__":
     parser.add_argument('--height', type=int, default=576, help="The height of input images")
     parser.add_argument('--width', type=int, default=1024, help="The width of input images")
     parser.add_argument('--ddim_steps', type=int, default=50, help="The steps of DDIM")
-    parser.add_argument('--input_file', type=str, default='input_images/testimg001.png', help="The extention of input images")
+    parser.add_argument('--input_file', type=str, default='input_images/1.png', help="The extention of input images")
     # parser.add_argument('--ext', type=str, default='.png', help="The extention type of input images")
     parser.add_argument('--ckpt_motionctrl', type=str, default='checkpoints/motionctrl_svd.ckpt', help="The ckpt path of motionctrl")
     parser.add_argument('--ckpt_mast3r', type=str, default='checkpoints/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric.pth', help="The ckpt path of mast3r")
